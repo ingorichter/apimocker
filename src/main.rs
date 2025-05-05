@@ -1,20 +1,115 @@
 mod state;
 
+use crate::state::Db;
+use axum::extract::{Path, State};
+use axum::routing::get;
+use axum::{Json, Router};
+use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::sync::Arc;
-use axum::extract::{Path, State};
-use axum::{Json, Router};
-use axum::routing::get;
-use serde_json::Value;
 use tokio::sync::RwLock;
-use crate::state::Db;
 
+fn find_by_id(list: &[Value], id: &str) -> Option<usize> {
+    // list.iter()
+    //     .position(|item| item.get("id").and_then(|v| v.as_str()).map_or(false, |s| s == id))
+
+    list.iter()
+        .position(|item| {
+            dbg!(&item);
+            if let Some(entry) = item.get("id") {
+                let id2 = entry.to_string();
+                return id2 == id
+            }
+            false
+        })
+}
+
+// GET /api/:route
 pub async fn get_all(
     Path(route): Path<String>,
     State(db): State<Db>,
 ) -> Json<Vec<Value>> {
     let db = db.read().await;
     Json(db.get(&route).cloned().unwrap_or_default())
+}
+
+// GET /api/:route/:id
+pub async fn get_by_id(
+    Path((route, id)): Path<(String, String)>,
+    State(db): State<Db>,
+) -> Json<Value> {
+    let db = db.read().await;
+    if let Some(list) = db.get(&route) {
+        if let Some(idx) = find_by_id(list, &id) {
+            return Json(list[idx].clone());
+        }
+    }
+
+    Json(json!({"error": "Not found"}))
+}
+
+// PUT /api/:route/:id
+pub async fn replace(
+    Path((route, id)): Path<(String, String)>,
+    State(db): State<Db>,
+    Json(body): Json<Value>,
+) -> Json<Value> {
+    let mut db = db.write().await;
+    if let Some(list) = db.get_mut(&route) {
+        if let Some(idx) = find_by_id(list, &id) {
+            let mut new_body = body.clone();
+            new_body["id"] = json!(id);
+            list[idx] = new_body.clone();
+            return Json(new_body);
+        }
+    }
+    Json(json!({"error": "Not found"}))}
+
+// PATCH /api/:route/:id
+pub async fn update(
+    Path((route, id)): Path<(String, String)>,
+    State(db): State<Db>,
+    Json(patch): Json<Value>,
+) -> Json<Value> {
+    let mut db = db.write().await;
+    if let Some(list) = db.get_mut(&route) {
+        if let Some(idx) = find_by_id(list, &id) {
+            if let Some(obj) = list[idx].as_object_mut() {
+                for (k, v) in patch.as_object().unwrap() {
+                    obj.insert(k.clone(), v.clone());
+                }
+                return Json(json!(obj));
+            }
+        }
+    }
+    Json(json!({"error": "Not found"}))
+}
+
+// DELETE /api/:route/:id
+pub async fn delete(
+    Path((route, id)): Path<(String, String)>,
+    State(db): State<Db>,
+) -> Json<Value> {
+    let mut db = db.write().await;
+    if let Some(list) = db.get_mut(&route) {
+        if let Some(idx) = find_by_id(list, &id) {
+            let removed = list.remove(idx);
+            return Json(removed);
+        }
+    }
+    Json(json!({"error": "Not found"}))
+}
+
+// POST /api/:route
+pub async fn create(
+    Path(route): Path<String>,
+    State(db): State<Db>,
+    Json(value): Json<Value>,
+) -> Json<Value> {
+    let mut db = db.write().await;
+    let entry = db.entry(route).or_insert_with(Vec::new);
+    entry.push(value.clone());
+    Json(value)
 }
 
 #[tokio::main]
@@ -25,7 +120,8 @@ async fn main() {
     let db: Db = Arc::new(RwLock::new(parsed));
 
     let app = Router::new()
-        .route("/api/{route}", get(get_all))
+        .route("/api/{route}", get(get_all).post(create))
+        .route("/api/{route}/{id}", get(get_by_id).put(replace).patch(update).delete(delete))
         .with_state(db);
 
     // run our app with hyper, listening globally on port 3000
