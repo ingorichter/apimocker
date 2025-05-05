@@ -1,0 +1,103 @@
+{
+  "feeds": [
+    {
+      "id": "1",
+      "url": "https://example.com/rss/tech-news.xml",
+      "title": "Tech News Daily",
+      "description": "Latest updates in technology, software, and innovation.",
+      "last_updated": "2023-10-15T14:30:00Z",
+      "created_at": "2023-10-15T10:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "url": "https://example.com/rss/blog.xml",
+      "title": "Example Blog",
+      "description": "Thoughts and insights on web development and design.",
+      "last_updated": "2023-10-14T09:15:00Z",
+      "created_at": "2023-10-14T08:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "url": "https://example.com/rss/travel-guide.xml",
+      "title": "Wanderlust Chronicles",
+      "description": "Exploring the world one destination at a time.",
+      "last_updated": "2023-10-13T16:45:00Z",
+      "created_at": "2023-10-13T12:30:00Z",
+      "status": "inactive"
+    }
+  ],
+  "comments": [
+    {
+      "id": "101",
+      "feed_id": "1",
+      "user": {
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "avatar": "https://example.com/avatar/john.jpg"
+      },
+      "text": "Great insights on AI trends! Keep up the good work.",
+      "timestamp": "2023-10-15T15:20:00Z"
+    },
+    {
+      "id": "102",
+      "feed_id": "1",
+      "user": {
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "avatar": "https://example.com/avatar/jane.jpg"
+      },
+      "text": "This feed is a must-read for tech enthusiasts.",
+      "timestamp": "2023-10-15T16:00:00Z"
+    },
+    {
+      "id": "103",
+      "feed_id": "2",
+      "user": {
+        "name": "Alex Johnson",
+        "email": "alex.johnson@example.com",
+        "avatar": "https://example.com/avatar/alex.jpg"
+      },
+      "text": "Love the practical tips here! Could you add more about CSS frameworks?",
+      "timestamp": "2023-10-14T11:30:00Z"
+    },
+    {
+      "id": "104",
+      "feed_id": "3",
+      "user": {
+        "name": "Sam Carter",
+        "email": "sam.carter@example.com",
+        "avatar": "https://example.com/avatar/sam.jpg"
+      },
+      "text": "The travel tips are amazing! I’d love to see more destinations in Asia.",
+      "timestamp": "2023-10-13T18:45:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "u1",
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "avatar": "https://example.com/avatar/john.jpg"
+    },
+    {
+      "id": "u2",
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "avatar": "https://example.com/avatar/jane.jpg"
+    },
+    {
+      "id": "u3",
+      "name": "Alex Johnson",
+      "email": "alex.johnson@example.com",
+      "avatar": "https://example.com/avatar/alex.jpg"
+    },
+    {
+      "id": "u4",
+      "name": "Sam Carter",
+      "email": "sam.carter@example.com",
+      "avatar": "https://example.com/avatar/sam.jpg"
+    }
+  ]
+}

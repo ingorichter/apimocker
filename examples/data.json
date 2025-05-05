@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "jdoe@doesntexist.com"
+    },
+    {
+      "id": 2,
+      "name": "Jane Doe",
+      "email": "janedoe@doesnexist.com"
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "Post 1",
+      "content": "Content of post 1",
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "title": "Post 2",
+      "content": "Content of post 2",
+      "userId": 2
+    }
+  ]
+}

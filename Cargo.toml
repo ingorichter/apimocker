@@ -1,0 +1,15 @@
+[package]
+name = "apimocker"
+version = "0.1.0"
+edition = "2024"
+description = "A tool for mocking REST APIs"
+license = "MIT"
+authors = ["Ingo Richter <ingo.richter+github@gmail.com>"]
+homepage = "github.com/ingorichter/apimocker"
+
+[dependencies]
+axum = "0.8.4"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
