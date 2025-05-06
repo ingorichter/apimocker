@@ -10,15 +10,11 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 
 fn find_by_id(list: &[Value], id: &str) -> Option<usize> {
-    // list.iter()
-    //     .position(|item| item.get("id").and_then(|v| v.as_str()).map_or(false, |s| s == id))
-
     list.iter()
         .position(|item| {
-            dbg!(&item);
             if let Some(entry) = item.get("id") {
-                let id2 = entry.to_string();
-                return id2 == id
+                // id's can be numbers or strings. So, convert the id to string
+                return entry.to_string() == id
             }
             false
         })
@@ -58,7 +54,17 @@ pub async fn replace(
     if let Some(list) = db.get_mut(&route) {
         if let Some(idx) = find_by_id(list, &id) {
             let mut new_body = body.clone();
-            new_body["id"] = json!(id);
+
+            let index_type = list[idx]["id"].clone();
+            
+            if index_type.is_string() {
+                new_body["id"] = json!(id);
+            } else if index_type.is_number() {
+                new_body["id"] = json!(id.parse::<i32>().unwrap());
+            } else {
+                return Json(json!({"error": "Invalid ID type"}));
+            }
+
             list[idx] = new_body.clone();
             return Json(new_body);
         }
